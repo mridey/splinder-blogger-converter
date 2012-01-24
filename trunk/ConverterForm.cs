@@ -36,21 +36,21 @@ namespace SplinderBloggerConverter
 
         private void onConvertClick(object sender, EventArgs e)
         {
-            statusTextBox.AppendText("Converting ...\r\n");
+            statusTextBox.AppendText("Conversione in corso ...\r\n");
             readPosts(false);
-            statusTextBox.AppendText("Conversion completed.\r\n");
+            statusTextBox.AppendText("Conversione completata.\r\n");
         }
 
         private void onTestClick(object sender, EventArgs e)
         {
-            statusTextBox.AppendText("Testing ...\r\n");
+            statusTextBox.AppendText("Verifica in corso ...\r\n");
             readPosts(true);
-            statusTextBox.AppendText("Test completed.\r\n");
+            statusTextBox.AppendText("Verifica completata.\r\n");
         }
 
         private void readPosts(bool dryRun)
         {
-            statusTextBox.AppendText("Parsing XML File ...\r\n");
+            statusTextBox.AppendText("Analisi file XML in corso ...\r\n");
 
             postCount = 0;
             commentCount = 0;
@@ -117,7 +117,7 @@ namespace SplinderBloggerConverter
                     {
                         errorCount++;
                         statusTextBox.AppendText(ex.Message + "\r\n");
-                        statusTextBox.AppendText(String.Format("Error processing post {0}\r\n", postCount));
+                        statusTextBox.AppendText(String.Format("Errore durante l'elaborazione del post {0}.\r\n", postCount));
                     }
                 }
             }
@@ -133,12 +133,12 @@ namespace SplinderBloggerConverter
                 {
                     errorCount++;
                     statusTextBox.AppendText(ex.Message + "\r\n");
-                    statusTextBox.AppendText(String.Format("Error processing XML Conversion\r\n"));
+                    statusTextBox.AppendText(String.Format("Errore durante la conversione XML.\r\n"));
                 }
             }
 
-            statusTextBox.AppendText(String.Format("{0} posts processed\r\n", postCount));
-            statusTextBox.AppendText(String.Format("{0} comments processed\r\n", commentCount));
+            statusTextBox.AppendText(String.Format("{0} post elaborati.\r\n", postCount));
+            statusTextBox.AppendText(String.Format("{0} commenti elaborati.\r\n", commentCount));
         }
 
         private void addPost(XmlWriter xw, int postNumber, XmlNode entryNode, bool dryRun)
@@ -172,7 +172,7 @@ namespace SplinderBloggerConverter
             {
                 errorCount++;
                 statusTextBox.AppendText(ex.Message + "\r\n");
-                statusTextBox.AppendText(String.Format("Unable to process post {0}\r\n", postCount));
+                statusTextBox.AppendText(String.Format("Impossibile elaborare il post {0}.\r\n", postCount));
             }
 
         }
@@ -197,7 +197,7 @@ namespace SplinderBloggerConverter
             {
                 errorCount++;
                 statusTextBox.AppendText(ex.Message + "\r\n");
-                statusTextBox.AppendText(String.Format("Unable to process comment {0} in post {1}\r\n", commentCount, postCount));
+                statusTextBox.AppendText(String.Format("Impossibile elaborare il commento {0} nel post {1}.\r\n", commentCount, postCount));
             }
         }
 
