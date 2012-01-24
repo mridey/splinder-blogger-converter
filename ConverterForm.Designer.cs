@@ -45,7 +45,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(92, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Splinder XML File:";
+            this.label1.Text = "File XML Splinder:";
             // 
             // filePathTextBox
             // 
@@ -60,7 +60,7 @@
             this.fileSelectButton.Name = "fileSelectButton";
             this.fileSelectButton.Size = new System.Drawing.Size(75, 23);
             this.fileSelectButton.TabIndex = 2;
-            this.fileSelectButton.Text = "Select";
+            this.fileSelectButton.Text = "Seleziona";
             this.fileSelectButton.UseVisualStyleBackColor = true;
             this.fileSelectButton.Click += new System.EventHandler(this.onFileSelectClick);
             // 
@@ -70,14 +70,14 @@
             this.convertButton.Name = "convertButton";
             this.convertButton.Size = new System.Drawing.Size(75, 23);
             this.convertButton.TabIndex = 10;
-            this.convertButton.Text = "Convert";
+            this.convertButton.Text = "Converti";
             this.convertButton.UseVisualStyleBackColor = true;
             this.convertButton.Click += new System.EventHandler(this.onConvertClick);
             // 
             // openXmlFileDialog
             // 
             this.openXmlFileDialog.DefaultExt = "xml";
-            this.openXmlFileDialog.Filter = "XML Files|*.xml|All files|*.*";
+            this.openXmlFileDialog.Filter = "File XML|*.xml|Tutti i file|*.*";
             // 
             // statusTextBox
             // 
@@ -93,9 +93,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(13, 69);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 13);
+            this.label5.Size = new System.Drawing.Size(35, 13);
             this.label5.TabIndex = 12;
-            this.label5.Text = "Status:";
+            this.label5.Text = "Stato:";
             // 
             // testButton
             // 
@@ -103,7 +103,7 @@
             this.testButton.Name = "testButton";
             this.testButton.Size = new System.Drawing.Size(75, 23);
             this.testButton.TabIndex = 14;
-            this.testButton.Text = "Test";
+            this.testButton.Text = "Prova";
             this.testButton.UseVisualStyleBackColor = true;
             this.testButton.Click += new System.EventHandler(this.onTestClick);
             // 
@@ -120,7 +120,7 @@
             this.Controls.Add(this.filePathTextBox);
             this.Controls.Add(this.label1);
             this.Name = "ConverterForm";
-            this.Text = "Convert to a Blogger XML File";
+            this.Text = "Converti in file XML per Blogger";
             this.ResumeLayout(false);
             this.PerformLayout();
 
