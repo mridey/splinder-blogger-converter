@@ -16,6 +16,7 @@ namespace SplinderBloggerConverter
         private int postCount;
         private int commentCount;
         private int errorCount;
+        private int fileCount;
 
         const string ATOM_NS = "http://www.w3.org/2005/Atom";
         const string PURL_NS = "http://purl.org/syndication/thread/1.0";
@@ -55,19 +56,12 @@ namespace SplinderBloggerConverter
             postCount = 0;
             commentCount = 0;
             errorCount = 0;
+            fileCount = 1;
 
             XmlWriter xw = null;
             if (!dryRun)
             {
-                String fileName = Path.GetFileName(filePathTextBox.Text);
-                String filePath = Path.GetDirectoryName(filePathTextBox.Text);
-                String outFileName = Path.Combine(filePath, "Blogger_" + fileName);
-
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Indent = true;
-                xw = XmlWriter.Create(outFileName, settings);
-                xw.WriteStartElement("ns0", "feed", ATOM_NS);
-                xw.WriteElementString("generator", ATOM_NS, "Blogger");
+                xw = startXmlArchive(fileCount);
             }
 
             XmlTextReader xtrInput = new XmlTextReader(new StreamReader(filePathTextBox.Text, Encoding.UTF8));
@@ -90,6 +84,13 @@ namespace SplinderBloggerConverter
                             {
                                 postCount++;
                                 addPost(xw, postCount, node, dryRun);
+
+                                if ((postCount + commentCount) > (fileCount * 1500))
+                                {
+                                    fileCount++;
+                                    endXmlArchive(xw);
+                                    xw = startXmlArchive(fileCount);
+                                }
                             }
                             else if (node.Name.ToLower() == "title")
                             {
@@ -126,8 +127,7 @@ namespace SplinderBloggerConverter
             {
                 try
                 {
-                    xw.WriteEndElement();
-                    xw.Close();
+                    endXmlArchive(xw);
                 }
                 catch (Exception ex)
                 {
@@ -139,6 +139,28 @@ namespace SplinderBloggerConverter
 
             statusTextBox.AppendText(String.Format("{0} post elaborati.\r\n", postCount));
             statusTextBox.AppendText(String.Format("{0} commenti elaborati.\r\n", commentCount));
+            statusTextBox.AppendText(String.Format("{0} file elaborati.\r\n", fileCount));
+        }
+
+        private void endXmlArchive(XmlWriter xw)
+        {
+            xw.WriteEndElement();
+            xw.Close();
+        }
+
+        private XmlWriter startXmlArchive(int fileCount)
+        {
+            String fileName = Path.GetFileName(filePathTextBox.Text);
+            String filePath = Path.GetDirectoryName(filePathTextBox.Text);
+            String prefix = String.Format("Blogger_{0}_", fileCount);
+            String outFileName = Path.Combine(filePath, prefix + fileName);
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            XmlWriter xw = XmlWriter.Create(outFileName, settings);
+            xw.WriteStartElement("ns0", "feed", ATOM_NS);
+            xw.WriteElementString("generator", ATOM_NS, "Blogger");
+            return xw;
         }
 
         private void addPost(XmlWriter xw, int postNumber, XmlNode entryNode, bool dryRun)
@@ -154,7 +176,7 @@ namespace SplinderBloggerConverter
 
                 if (!dryRun)
                 {
-                    insertPost(xw, postNumber, title, content, isDraft, published, updated, author, link);
+                    insertPost(xw, postNumber, title, content, isDraft, published, updated, author, link, entryNode);
                 }
 
                 int commentNumber = 0;
@@ -174,7 +196,6 @@ namespace SplinderBloggerConverter
                 statusTextBox.AppendText(ex.Message + "\r\n");
                 statusTextBox.AppendText(String.Format("Impossibile elaborare il post {0}.\r\n", postCount));
             }
-
         }
 
         private void addComment(XmlWriter xw, int postNumber, string link, int commentNumber, XmlNode commentNode, bool dryRun)
@@ -202,7 +223,7 @@ namespace SplinderBloggerConverter
         }
 
         private void insertPost(XmlWriter xw, int postNumber, string title, string content, bool isDraft,
-            DateTime published, DateTime updated, string author, string link)
+            DateTime published, DateTime updated, string author, string link, XmlNode entryNode)
         {
             /*
               <ns0:entry>
@@ -225,6 +246,27 @@ namespace SplinderBloggerConverter
             xw.WriteAttributeString("type", "text/html");
             xw.WriteAttributeString("href", link);
             xw.WriteEndElement();
+
+            foreach (XmlNode node in entryNode.ChildNodes)
+            {
+                if (node.Name == "category")
+                {
+                    string category = getAttribute(node, "term");
+                    if (category != null && category.Length > 0)
+                    {
+                        insertCategory(xw, category);
+                    }
+                }
+            }
+
+            xw.WriteEndElement();
+        }
+
+        private void insertCategory(XmlWriter xw, string term)
+        {
+            xw.WriteStartElement("category", ATOM_NS);
+            xw.WriteAttributeString("scheme", "http://www.blogger.com/atom/ns#");
+            xw.WriteAttributeString("term", term);
             xw.WriteEndElement();
         }
 
@@ -301,6 +343,16 @@ namespace SplinderBloggerConverter
                         if (attribute.Name == "href")
                             return attribute.InnerText;
                     }
+            }
+            return "";
+        }
+
+        private string getAttribute(XmlNode node, string name)
+        {
+            foreach (XmlAttribute attribute in node.Attributes)
+            {
+                if (attribute.Name == name)
+                    return attribute.InnerText;
             }
             return "";
         }
