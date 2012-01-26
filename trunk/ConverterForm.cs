@@ -88,8 +88,11 @@ namespace SplinderBloggerConverter
                                 if ((postCount + commentCount) > (fileCount * 1500))
                                 {
                                     fileCount++;
-                                    endXmlArchive(xw);
-                                    xw = startXmlArchive(fileCount);
+                                    if (!dryRun)
+                                    {
+                                        endXmlArchive(xw);
+                                        xw = startXmlArchive(fileCount);
+                                    }
                                 }
                             }
                             else if (node.Name.ToLower() == "title")
