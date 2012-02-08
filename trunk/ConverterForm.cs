@@ -320,10 +320,10 @@ namespace SplinderBloggerConverter
             xw.WriteCData(content);
             xw.WriteEndElement();
             xw.WriteStartElement("published", ATOM_NS);
-            xw.WriteString(published.ToString("yyyy-MM-ddTHH:mm:sszzz"));
+            xw.WriteString(published.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"));
             xw.WriteEndElement();
             xw.WriteStartElement("updated", ATOM_NS);
-            xw.WriteString(updated.ToString("yyyy-MM-ddTHH:mm:sszzz"));
+            xw.WriteString(updated.ToString("yyyy-MM-ddTHH\\:mm\\:sszzz"));
             xw.WriteEndElement();
             xw.WriteStartElement("title", ATOM_NS);
             xw.WriteAttributeString("type", "html");
